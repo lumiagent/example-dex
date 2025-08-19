@@ -9,23 +9,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Unzip source code
         run: unzip example-dex-with-workflows.zip
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies
         working-directory: example-dex/example-dex-master
         run: npm install
+
       - name: Build
         working-directory: example-dex/example-dex-master
         env:
           VITE_BROKER_ID: ${{ secrets.VITE_BROKER_ID }}
           VITE_NETWORK_ID: ${{ secrets.VITE_NETWORK_ID }}
-                  BASE: /example-dex/
+          BASE: /example-dex/
         run: npm run build
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
