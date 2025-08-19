@@ -1,13 +1,10 @@
 name: Deploy to GitHub Pages
-
 on:
   push:
     branches:
       - main
-
 permissions:
   contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,20 +18,13 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         working-directory: example-dex/example-dex-master
-        run: |
-          if [ -f yarn.lock ]; then
-            yarn install --frozen-lockfile
-          elif [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-            fi
+        run: npm install
       - name: Build
         working-directory: example-dex/example-dex-master
-        run: |
-          VITE_BROKER_ID=${{ secrets.VITE_BROKER_ID }} \
-          VITE_NETWORK_ID=${{ secrets.VITE_NETWORK_ID }} \
-          npm run build
+        env:
+          VITE_BROKER_ID: ${{ secrets.VITE_BROKER_ID }}
+          VITE_NETWORK_ID: ${{ secrets.VITE_NETWORK_ID }}
+        run: npm run build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
