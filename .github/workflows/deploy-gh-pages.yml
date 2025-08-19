@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip source code
+        run: unzip example-dex-with-workflows.zip
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: example-dex/example-dex-master
+
+      - name: Build
+        run: |
+          VITE_BROKER_ID=${{ secrets.VITE_BROKER_ID }} \
+          VITE_NETWORK_ID=${{ secrets.VITE_NETWORK_ID }} \
+          npm run build
+        working-directory: example-dex/example-dex-master
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: example-dex/example-dex-master/build/client
