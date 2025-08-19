@@ -24,6 +24,7 @@ jobs:
         env:
           VITE_BROKER_ID: ${{ secrets.VITE_BROKER_ID }}
           VITE_NETWORK_ID: ${{ secrets.VITE_NETWORK_ID }}
+                BASE: /example-dex/
         run: npm run build
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
